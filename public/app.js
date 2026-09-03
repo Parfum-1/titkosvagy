@@ -1,15 +1,15 @@
-function switchView(viewName) {
+window.switchView = function(viewName) {
     document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('nav a').forEach(el => el.classList.remove('active'));
 
     const targetView = document.getElementById('view-' + viewName);
     if (targetView) targetView.classList.add('active');
-    
+
     const navEl = document.getElementById('nav-' + viewName);
     if (navEl) navEl.classList.add('active');
-    
+
     window.scrollTo(0, 0);
-}
+};
 
 document.addEventListener('DOMContentLoaded', () => {
     checkAuthState();

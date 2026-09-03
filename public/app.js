@@ -1,22 +1,219 @@
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('Titkosvagy kliens szkript betöltve.');
+function switchView(viewName) {
+    document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('nav a').forEach(el => el.classList.remove('active'));
 
-    const searchBtn = document.getElementById('search-btn');
-    if (searchBtn) {
-        searchBtn.addEventListener('click', () => {
-            const keyword = document.getElementById('keyword').value;
-            const gender = document.getElementById('gender').value;
-            
-            alert(`Keresés paraméterei:\nKulcsszó: ${keyword || 'Összes'}\nNem: ${gender || 'Mindegy'}`);
+    const targetView = document.getElementById('view-' + viewName);
+    if (targetView) targetView.classList.add('active');
+    
+    const navEl = document.getElementById('nav-' + viewName);
+    if (navEl) navEl.classList.add('active');
+    
+    window.scrollTo(0, 0);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    checkAuthState();
+
+    // Hagyományos Regisztráció
+    const regForm = document.getElementById('register-form');
+    if (regForm) {
+        regForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const displayName = document.getElementById('reg-name').value;
+            const email = document.getElementById('reg-email').value;
+            const password = document.getElementById('reg-password').value;
+
+            try {
+                const res = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ displayName, email, password })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    alert('Sikeres regisztráció! Kérlek, jelentkezz be.');
+                    switchView('login');
+                } else {
+                    alert(data.error || 'Hiba történt.');
+                }
+            } catch (err) {
+                alert('Szerverhiba.');
+            }
         });
     }
 
+    // Hagyományos Bejelentkezés
     const loginForm = document.getElementById('login-form');
     if (loginForm) {
-        loginForm.addEventListener('submit', (e) => {
+        loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = document.getElementById('email').value;
-            alert(`Bejelentkezési kísérlet ezzel az e-mailnel: ${email}`);
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            try {
+                const res = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    localStorage.setItem('token', data.token);
+                    alert('Sikeres bejelentkezés!');
+                    window.location.reload();
+                } else {
+                    alert(data.error || 'Hibás adatok.');
+                }
+            } catch (err) {
+                alert('Szerverhiba.');
+            }
         });
     }
+
+    // Képfeltöltés kezelése
+    const photoForm = document.getElementById('photo-upload-form');
+    if (photoForm) {
+        photoForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData();
+            const profileFile = document.getElementById('input-profile-img').files[0];
+            const privateFile = document.getElementById('input-private-img').files[0];
+
+            if (profileFile) formData.append('profileImage', profileFile);
+            if (privateFile) formData.append('privateImage', privateFile);
+
+            try {
+                const res = await fetch('/api/user/upload-photos', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+                    body: formData
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert('Képek sikeresen feltöltve!');
+                    loadUserProfile();
+                } else {
+                    alert('Hiba a képek feltöltésekor.');
+                }
+            } catch (err) {
+                alert('Szerverhiba a feltöltés során.');
+            }
+        });
+    }
+
+    // Google Sign-In Inicializálás (ha be van állítva a kliens ID)
+    if (window.google) {
+        // Cseréld ki a CLIENT_ID-t a saját Google Console Client ID-dra
+        const GOOGLE_CLIENT_ID = 'AZ_TE_GOOGLE_CLIENT_ID_OD.apps.googleusercontent.com';
+        
+        try {
+            google.accounts.id.initialize({
+                client_id: GOOGLE_CLIENT_ID,
+                callback: handleGoogleResponse
+            });
+
+            const loginBtnDiv = document.getElementById('google-signin-btn-login');
+            if (loginBtnDiv) {
+                google.accounts.id.renderButton(loginBtnDiv, { theme: 'outline', size: 'large', width: '300' });
+            }
+            const regBtnDiv = document.getElementById('google-signin-btn-reg');
+            if (regBtnDiv) {
+                google.accounts.id.renderButton(regBtnDiv, { theme: 'outline', size: 'large', width: '300' });
+            }
+        } catch (e) {
+            console.log('Google Auth nem inicializálódott (hiányzó ID).');
+        }
+    }
 });
+
+async function handleGoogleResponse(response) {
+    try {
+        const res = await fetch('/api/auth/google', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ credential: response.credential })
+        });
+        const data = await res.json();
+        if (res.ok) {
+            localStorage.setItem('token', data.token);
+            alert('Sikeres Google bejelentkezés!');
+            window.location.reload();
+        } else {
+            alert(data.error || 'Google hitelesítési hiba.');
+        }
+    } catch (err) {
+        alert('Szerverhiba a Google azonosítás során.');
+    }
+}
+
+async function checkAuthState() {
+    const token = localStorage.getItem('token');
+    if (token) {
+        const profileNav = document.getElementById('nav-profile');
+        if (profileNav) profileNav.style.display = 'inline';
+
+        const navButtons = document.getElementById('nav-buttons-container');
+        if (navButtons) {
+            navButtons.innerHTML = `<button class="btn-primary" onclick="switchView('profile')">Saját Profilom</button>`;
+        }
+        loadUserProfile();
+    }
+}
+
+async function loadUserProfile() {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    try {
+        const res = await fetch('/api/user/profile', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.ok) {
+            const user = await res.json();
+            document.getElementById('profile-display-name').textContent = user.displayName;
+            document.getElementById('profile-credits').textContent = user.credits;
+            
+            if (user.profileImage) {
+                document.getElementById('prev-profile-img').src = user.profileImage;
+            }
+            if (user.privateImage) {
+                document.getElementById('prev-private-img').src = user.privateImage;
+            }
+        }
+    } catch (err) {
+        console.error('Nem sikerült betölteni a profil adatokat.');
+    }
+}
+
+function logout() {
+    localStorage.removeItem('token');
+    window.location.href = '/';
+}
+
+async function buyCredits(packageSize) {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert('A vásárláshoz be kell jelentkezned!');
+        switchView('login');
+        return;
+    }
+
+    try {
+        const res = await fetch('/api/payment/create-checkout-session', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ creditPackage: packageSize })
+        });
+        const data = await res.json();
+        if (data.url) {
+            window.location.href = data.url;
+        } else {
+            alert(data.error || 'Hiba a Stripe fizetési kapu indításakor.');
+        }
+    } catch (err) {
+        alert('Szerverhiba a fizetés indításakor.');
+    }
+}

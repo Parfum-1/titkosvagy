@@ -5,9 +5,12 @@ const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const path = require('path');
 const multer = require('multer');
+const { OAuth2Client } = require('google-auth-library');
 require('dotenv').config();
 
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY || 'sk_test_dummy');
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET || 'titkosvagy_biztonsagi_kulcs_2026';
@@ -39,7 +42,8 @@ mongoose.connect(MONGO_URI)
 const userSchema = new mongoose.Schema({
   displayName: { type: String, required: true },
   email: { type: String, required: true, unique: true },
-  passwordHash: { type: String, required: true },
+  passwordHash: { type: String },
+  googleId: { type: String },
   credits: { type: Number, default: 10 },
   profileImage: { type: String, default: '' },
   privateImage: { type: String, default: '' },
@@ -71,7 +75,7 @@ function authenticateToken(req, res, next) {
   });
 }
 
-// Auth végpontok
+// Hagyományos Regisztráció
 app.post('/api/auth/register', async (req, res) => {
   try {
     const { displayName, email, password } = req.body;
@@ -89,11 +93,12 @@ app.post('/api/auth/register', async (req, res) => {
   }
 });
 
+// Hagyományos Bejelentkezés
 app.post('/api/auth/login', async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ error: 'Hibás adatok.' });
+    if (!user || !user.passwordHash) return res.status(400).json({ error: 'Hibás adatok.' });
     const isMatch = await bcrypt.compare(password, user.passwordHash);
     if (!isMatch) return res.status(400).json({ error: 'Hibás adatok.' });
     const token = jwt.sign({ userId: user._id, email: user.email }, JWT_SECRET, { expiresIn: '7d' });
@@ -103,7 +108,47 @@ app.post('/api/auth/login', async (req, res) => {
   }
 });
 
-// Képfeltöltés végpont (2 kép)
+// Google Bejelentkezés / Regisztráció
+app.post('/api/auth/google', async (req, res) => {
+  try {
+    const { credential } = req.body;
+    const ticket = await googleClient.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID
+    });
+    const payload = ticket.getPayload();
+    const { email, name, sub } = payload;
+
+    let user = await User.findOne({ email });
+    if (!user) {
+      user = new User({
+        displayName: name,
+        email: email,
+        googleId: sub,
+        passwordHash: ''
+      });
+      await user.save();
+    }
+
+    const token = jwt.sign({ userId: user._id, email: user.email }, JWT_SECRET, { expiresIn: '7d' });
+    res.json({ token, displayName: user.displayName, credits: user.credits });
+  } catch (err) {
+    res.status(500).json({ error: 'Google hitelesítési hiba.' });
+  }
+});
+
+// Saját adatok lekérése
+app.get('/api/user/profile', authenticateToken, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId).select('-passwordHash');
+    if (!user) return res.status(404).json({ error: 'Felhasználó nem található.' });
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ error: 'Szerverhiba.' });
+  }
+});
+
+// Képfeltöltés végpont (2 kép: 1 profilkép, 1 zárt kép)
 app.post('/api/user/upload-photos', authenticateToken, upload.fields([
   { name: 'profileImage', maxCount: 1 },
   { name: 'privateImage', maxCount: 1 }

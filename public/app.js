@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (window.google) {
-        const GOOGLE_CLIENT_ID = 'AZ_TE_GOOGLE_CLIENT_ID_OD.apps.googleusercontent.com';
+        const GOOGLE_CLIENT_ID = '685022025527-sj6jsgq4l67doi63d124pj2630pmqeac.apps.googleusercontent.com';
         try {
             google.accounts.id.initialize({
                 client_id: GOOGLE_CLIENT_ID,

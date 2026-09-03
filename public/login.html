@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belépés - Titkosvagy</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body style="display: flex; flex-direction: column; justify-content: space-between;">
+    <header>
+        <a href="/" class="logo">Titkosvagy</a>
+        <nav>
+            <a href="/">Vissza a főoldalra</a>
+        </nav>
+    </header>
+
+    <main style="display: flex; align-items: center; justify-content: center;">
+        <div style="background: var(--bg-secondary); padding: 2.5rem; border-radius: 8px; border: 1px solid var(--border-color); width: 100%; max-width: 400px;">
+            <h2 style="margin-bottom: 1.5rem; color: var(--accent-gold); text-align: center;">Fiók belépés</h2>
+            <form id="login-form">
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted);">E-mail cím</label>
+                    <input type="email" id="email" required style="width: 100%; padding: 0.8rem; background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 4px;">
+                </div>
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted);">Jelszó</label>
+                    <input type="password" id="password" required style="width: 100%; padding: 0.8rem; background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 4px;">
+                </div>
+                <button type="submit" class="btn-gold" style="width: 100%; padding: 0.8rem;">Belépés</button>
+            </form>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Titkosvagy. Minden jog fenntartva.</p>
+    </footer>
+    <script src="app.js"></script>
+</body>
+</html>

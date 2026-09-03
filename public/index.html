@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forróvágy - Diszkrét 18+ Ismerkedés</title>
+    <style>
+        :root {
+            --bg-main: #14070c;
+            --bg-card: #200d14;
+            --bg-card-hover: #2c121d;
+            --accent-pink: #d93874;
+            --accent-pink-hover: #f04283;
+            --accent-gold: #e6ca65;
+            --text-main: #fceef3;
+            --text-muted: #b89ca6;
+            --border-color: rgba(217, 56, 116, 0.25);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Fejléc */
+        header {
+            background-color: rgba(20, 7, 12, 0.95);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            color: var(--accent-gold);
+            font-size: 1.2rem;
+            text-decoration: none;
+        }
+
+        .logo-box {
+            background: #2a0c1a;
+            border: 1px solid var(--border-color);
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+
+        nav {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        nav a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+
+        nav a:hover, nav a.active {
+            color: var(--accent-gold);
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 0.5rem 1.2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-outline:hover {
+            border-color: var(--accent-pink);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #e0417c, #b8235b);
+            border: none;
+            color: white;
+            padding: 0.6rem 1.4rem;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(217, 56, 116, 0.4);
+            transition: opacity 0.3s;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+
+        /* Tartalom nézetek */
+        .view-section {
+            display: none;
+            flex: 1;
+            padding: 3rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        /* Főoldal Hero */
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 4rem 3rem;
+            background: linear-gradient(135deg, rgba(32, 13, 20, 0.9), rgba(20, 7, 12, 0.9)), url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect fill="%23200d14" width="100" height="100"/></svg>');
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .badge {
+            background: rgba(217, 56, 116, 0.15);
+            color: var(--accent-gold);
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            border: 1px solid var(--border-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            max-width: 700px;
+        }
+
+        .hero p {
+            color: var(--text-muted);
+            font-size: 1.15rem;
+            max-width: 600px;
+            margin-bottom: 2.5rem;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
+        }
+
+        .stats-grid {
+            display: flex;
+            gap: 2rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 2rem;
+            width: 100%;
+        }
+
+        .stat-item h3 {
+            font-size: 1.5rem;
+            color: var(--text-main);
+            margin-bottom: 0.2rem;
+        }
+
+        .stat-item p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        /* Kereső nézet */
+        .search-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 2rem;
+            border-radius: 12px;
+            margin-top: 1.5rem;
+        }
+
+        .search-grid {
+            display: grid;
+            grid-template-columns: 2fr 1.5fr 1fr 1fr 1.5fr;
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .form-control {
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 0.75rem;
+            border-radius: 6px;
+            font-size: 0.95rem;
+        }
+
+        .gender-options {
+            display: flex;
+            gap: 5px;
+            background: var(--bg-main);
+            padding: 4px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+        }
+
+        .gender-btn {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .gender-btn.active {
+            background: linear-gradient(135deg, #e0417c, #b8235b);
+            color: white;
+            font-weight: bold;
+        }
+
+        .search-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            justify-content: flex-end;
+        }
+
+        /* Auth (Belépés / Regisztráció) Nézetek */
+        .auth-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            max-width: 900px;
+            margin: 2rem auto;
+        }
+
+        .auth-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 2.5rem;
+            border-radius: 12px;
+        }
+
+        .auth-card h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-card p {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        .social-btn {
+            width: 100%;
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 0.75rem;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 1.5rem;
+        }
+
+        .divider {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Segítség / Hogyan működik */
+        .help-content h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .help-section-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 2rem;
+            border-radius: 12px;
+            margin-top: 2rem;
+        }
+
+        .help-section-box h3 {
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .help-section-box p {
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* Lebegő sarok gombok */
+        .floating-footer-btns {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 999;
+        }
+
+        .float-btn {
+            background: #200d14;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 0.6rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .float-btn:hover {
+            border-color: var(--accent-pink);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Fejléc -->
+    <header>
+        <a class="logo-area" onclick="switchView('home')">
+            <div class="logo-box">🔥</div>
+            <span>Forróvágy</span>
+        </a>
+        <nav>
+            <a onclick="switchView('home')" id="nav-home" class="active">Főoldal</a>
+            <a onclick="switchView('search')" id="nav-search">Keresés</a>
+            <a onclick="switchView('help')" id="nav-help">Segítség</a>
+        </nav>
+        <div class="nav-buttons">
+            <button class="btn-outline" onclick="switchView('login')">Belépés</button>
+            <button class="btn-primary" onclick="switchView('register')">Ingyenes regisztráció</button>
+        </div>
+    </header>
+
+    <!-- FŐOLDAL VIEW -->
+    <div id="view-home" class="view-section active">
+        <div class="hero">
+            <div class="badge">🔥 Forróvágy · diszkrét 18+ ismerkedés</div>
+            <h1>Ismerkedj<br>diszkréten. A többi<br>rajtatok múlik.</h1>
+            <p>Flört, beszélgetés vagy valamit több? Nézd körül, találd meg azt, aki felkelti a figyelmed, és csak akkor regisztrálj, amikor írni szeretnél.</p>
+            
+            <div class="hero-buttons">
+                <button class="btn-primary" onclick="switchView('search')">Megnézem, kik vannak itt</button>
+                <button class="btn-outline" onclick="switchView('register')">Csatlakozom ingyen</button>
+                <button class="btn-outline" onclick="switchView('login')">Már van fiókom</button>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <h3>878</h3>
+                    <p>böngészhető adatlap</p>
+                </div>
+                <div class="stat-item">
+                    <h3>Belépés nélkül is</h3>
+                    <p>is körülnézhetsz</p>
+                </div>
+                <div class="stat-item">
+                    <h3>18+</h3>
+                    <p>felnőtteknek</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- KERESÉS VIEW -->
+    <div id="view-search" class="view-section">
+        <h1>Keresés</h1>
+        <p style="color: var(--text-muted); margin-bottom: 2rem;">Nézd körül, vagy szűkítsd a találatokat nem, kor és megye szerint.</p>
+        
+        <div class="search-container">
+            <div class="search-grid">
+                <div class="form-group">
+                    <label>Név, város vagy érdeklődés</label>
+                    <input type="text" class="form-control" placeholder="Például: Budapest, sport, Anna">
+                </div>
+                <div class="form-group">
+                    <label>Nem</label>
+                    <div class="gender-options">
+                        <button class="gender-btn active">Mindegy</button>
+                        <button class="gender-btn">Nő</button>
+                        <button class="gender-btn">Férfi</button>
+                        <button class="gender-btn">Transz</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Minimum kor</label>
+                    <input type="number" class="form-control" value="18" min="18">
+                </div>
+                <div class="form-group">
+                    <label>Maximum kor</label>
+                    <input type="number" class="form-control" value="99" max="99">
+                </div>
+                <div class="form-group">
+                    <label>Megye / régió</label>
+                    <select class="form-control">
+                        <option>Összes megye / régió</option>
+                        <option>Budapest</option>
+                        <option>Pest megye</option>
+                        <option>Győr-Moson-Sopron</option>
+                    </select>
+                </div>
+            </div>
+            <div class="search-actions">
+                <button class="btn-outline">Szűrők törlése</button>
+                <button class="btn-primary">Keresés</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- BELÉPÉS VIEW -->
+    <div id="view-login" class="view-section">
+        <div class="auth-wrapper" style="grid-template-columns: 1fr;">
+            <div class="auth-card" style="max-width: 500px; margin: 0 auto; width: 100%;">
+                <h2>Belépés</h2>
+                <p>Lépj be, és folytasd ott, ahol abbahagytad.</p>
+                
+                <button class="social-btn">🔒 Belépés Google-fiókkal</button>
+                <div class="divider">vagy e-mail címmel</div>
+
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label>E-mail cím</label>
+                    <input type="email" class="form-control" placeholder="email@pelda.hu">
+                </div>
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label>Jelszó</label>
+                    <input type="password" class="form-control" placeholder="Jelszó">
+                </div>
+                <button class="btn-primary" style="width: 100%; margin-bottom: 1rem;">Belépés</button>
+                <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+                    <a style="color: var(--text-muted); cursor: pointer;">Elfelejtett jelszó</a>
+                    <a style="color: var(--accent-gold); cursor: pointer;" onclick="switchView('register')">Még nincs fiókom</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- REGISZTRÁCIÓ VIEW -->
+    <div id="view-register" class="view-section">
+        <div class="auth-wrapper" style="grid-template-columns: 1fr;">
+            <div class="auth-card" style="max-width: 500px; margin: 0 auto; width: 100%;">
+                <h2>Regisztráció</h2>
+                <p>Hozd létre a fiókodat néhány lépésben. Utána azonnal visszakerülsz oda, ahol folytatni szeretnéd.</p>
+                
+                <button class="social-btn">🔒 Regisztráció Google-fiókkal</button>
+                <div class="divider">vagy e-mail címmel</div>
+
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label>Megjelenített név</label>
+                    <input type="text" class="form-control" placeholder="Ezt látják majd mások">
+                </div>
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label>E-mail cím</label>
+                    <input type="email" class="form-control" placeholder="email@pelda.hu">
+                </div>
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label>Jelszó</label>
+                    <input type="password" class="form-control" placeholder="Legalább 8 karakter">
+                </div>
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label>Jelszó újra</label>
+                    <input type="password" class="form-control" placeholder="Írd be még egyszer">
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="c1" checked>
+                    <label for="c1">Kérem email értesítést új üzenetről és fontos fiókeseményekről. Ezt később kikapcsolhatom.</label>
+                </div>
+                <div class="checkbox-group" style="margin-bottom: 1.5rem;">
+                    <input type="checkbox" id="c2">
+                    <label for="c2">Elfogadom az ÁSZF-et, az Adatkezelési tájékoztatót, és megerősítem, hogy elmúltam 18 éves.</label>
+                </div>
+
+                <button class="btn-primary" style="width: 100%;">Regisztráció</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SEGÍTSÉG VIEW -->
+    <div id="view-help" class="view-section">
+        <div class="help-content">
+            <h1>Hogyan működik a Forróvágy?</h1>
+            <p style="color: var(--text-muted);">Rövid, közérthető leírás arról, mire számíthatsz böngészés, üzenetküldés és kreditvásárlás közben.</p>
+
+            <div class="help-section-box">
+                <h3>1. Böngészés</h3>
+                <p>A keresővel nem, kor és régió szerint szűrhetsz. A találatok teljes darabszámát a felület nem jeleníti meg. A kártyák sorrendje egy munkameneten belül stabil, új munkamenetben újrasorsolódik.</p>
+            </div>
+
+            <div class="help-section-box">
+                <h3>2. Üzenetváltás</h3>
+                <p>Üzenet küldéséhez bejelentkezés és elegendő kredit szükséges. Egy szöveges üzenet alapdíja 6 kredit. A küldés előtt és a Kreditvásárlás oldalon is látható az elszámolás.</p>
+            </div>
+
+            <div class="help-section-box">
+                <h3>3. Zárt képek</h3>
+                <p>A zárt képek megnyitása alapvetően 10 kredit. A megnyitási díj a művelet előtt látható, és a rendszer csak a sikeresen végrehajtott feloldásnál számol el kreditet.</p>
+            </div>
+
+            <div class="help-section-box">
+                <h3>4. Virtuális adatlapok</h3>
+                <p>A szolgáltatásban szórakoztató célú virtuális adatlapok is szerepelhetnek. Ezekhez személyes találkozás nem kapcsolódik. A velük folytatott kommunikáció online szórakoztató célú.</p>
+            </div>
+
+            <div class="help-section-box">
+                <h3>5. AI-rendszer</h3>
+                <p>Egyes beszélgetések részben vagy egészben AI-rendszer közreműködésével működhetnek. Ha közvetlen AI-interakció történik, erről az érintett kommunikáció előtt egyértelmű tájékoztatást adunk.</p>
+            </div>
+
+            <div class="help-section-box">
+                <h3>6. Mit nem ígér a szolgáltatás?</h3>
+                <p>Nem garantálunk választ, személyes találkozást, párkapcsolatot vagy más meghatározott eredményt. A felhasználó az online szolgáltatáshoz való hozzáférésért és az igénybe vett digitális funkciókért fizet.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lebegő alsó sarok gombok -->
+    <div class="floating-footer-btns">
+        <a class="float-btn">💳 Banki átutalás</a>
+        <a class="float-btn">💬 Ügyfélszolgálat</a>
+    </div>
+
+    <script>
+        function switchView(viewName) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('nav a').forEach(el => el.classList.remove('active'));
+
+            document.getElementById('view-' + viewName).classList.add('active');
+            
+            const navEl = document.getElementById('nav-' + viewName);
+            if (navEl) navEl.classList.add('active');
+            
+            window.scrollTo(0, 0);
+        }
+    </script>
+</body>
+</html>

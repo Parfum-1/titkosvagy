@@ -13,14 +13,13 @@ const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const JWT_SECRET = process.env.JWT_SECRET || 'titkosvagy_biztonsagi_kulcs_2026';
+const JWT_SECRET = process.env.JWT_SECRET || 'titkovagy_biztonsagi_kulcs_2026';
 
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
-// Multer konfiguráció 2 kép kezelésére (profilkép és zárt saját kép)
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const fs = require('fs');
@@ -34,9 +33,9 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/forrovagy_db';
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/titkovagy_db';
 mongoose.connect(MONGO_URI)
-  .then(() => console.log('Adatbázis kapcsolat sikeres.'))
+  .then(() => console.log('Titkovágy adatbázis kapcsolat sikeres.'))
   .catch(err => console.error('Adatbázis hiba:', err));
 
 const userSchema = new mongoose.Schema({
@@ -47,22 +46,11 @@ const userSchema = new mongoose.Schema({
   credits: { type: Number, default: 10 },
   profileImage: { type: String, default: '' },
   privateImage: { type: String, default: '' },
-  gender: { type: String, default: 'not_specified' },
+  gender: { type: String, default: 'Nő' },
+  age: { type: Number, default: 18 },
   createdAt: { type: Date, default: Date.now }
 });
 const User = mongoose.model('User', userSchema);
-
-const profileSchema = new mongoose.Schema({
-  name: String,
-  age: Number,
-  city: String,
-  gender: String,
-  region: String,
-  interests: [String],
-  image: String,
-  isVirtual: { type: Boolean, default: false }
-});
-const Profile = mongoose.model('Profile', profileSchema);
 
 function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization'];
@@ -75,7 +63,6 @@ function authenticateToken(req, res, next) {
   });
 }
 
-// Hagyományos Regisztráció
 app.post('/api/auth/register', async (req, res) => {
   try {
     const { displayName, email, password } = req.body;
@@ -93,7 +80,6 @@ app.post('/api/auth/register', async (req, res) => {
   }
 });
 
-// Hagyományos Bejelentkezés
 app.post('/api/auth/login', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -108,7 +94,6 @@ app.post('/api/auth/login', async (req, res) => {
   }
 });
 
-// Google Bejelentkezés / Regisztráció
 app.post('/api/auth/google', async (req, res) => {
   try {
     const { credential } = req.body;
@@ -137,7 +122,6 @@ app.post('/api/auth/google', async (req, res) => {
   }
 });
 
-// Saját adatok lekérése
 app.get('/api/user/profile', authenticateToken, async (req, res) => {
   try {
     const user = await User.findById(req.user.userId).select('-passwordHash');
@@ -148,7 +132,23 @@ app.get('/api/user/profile', authenticateToken, async (req, res) => {
   }
 });
 
-// Képfeltöltés végpont (2 kép: 1 profilkép, 1 zárt kép)
+app.put('/api/user/profile', authenticateToken, async (req, res) => {
+  try {
+    const { displayName, age, gender } = req.body;
+    const user = await User.findById(req.user.userId);
+    if (!user) return res.status(404).json({ error: 'Felhasználó nem található.' });
+
+    if (displayName) user.displayName = displayName;
+    if (age) user.age = age;
+    if (gender) user.gender = gender;
+
+    await user.save();
+    res.json({ success: true, user });
+  } catch (err) {
+    res.status(500).json({ error: 'Hiba a profil frissítésekor.' });
+  }
+});
+
 app.post('/api/user/upload-photos', authenticateToken, upload.fields([
   { name: 'profileImage', maxCount: 1 },
   { name: 'privateImage', maxCount: 1 }
@@ -168,7 +168,6 @@ app.post('/api/user/upload-photos', authenticateToken, upload.fields([
   }
 });
 
-// Stripe fizetési session
 app.post('/api/payment/create-checkout-session', authenticateToken, async (req, res) => {
   try {
     const { creditPackage } = req.body;
@@ -183,7 +182,7 @@ app.post('/api/payment/create-checkout-session', authenticateToken, async (req, 
         quantity: 1,
       }],
       mode: 'payment',
-      success_url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}?success=true&credits=${creditPackage}`,
+      success_url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}?success=true`,
       cancel_url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}?canceled=true`,
     });
     res.json({ url: session.url });
@@ -192,4 +191,4 @@ app.post('/api/payment/create-checkout-session', authenticateToken, async (req, 
   }
 });
 
-app.listen(PORT, () => console.log(`Backend fut a ${PORT}-es porton.`));
+app.listen(PORT, () => console.log(`Titkovágy szerver fut a ${PORT}-es porton.`));

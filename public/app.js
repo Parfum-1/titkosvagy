@@ -76,6 +76,36 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    const profileInfoForm = document.getElementById('profile-info-form');
+    if (profileInfoForm) {
+        profileInfoForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const displayName = document.getElementById('profile-name-input').value;
+            const age = document.getElementById('profile-age-input').value;
+            const gender = document.getElementById('profile-gender-input').value;
+
+            try {
+                const res = await fetch('/api/user/profile', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify({ displayName, age, gender })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert('Profil adatok sikeresen mentve!');
+                    loadUserProfile();
+                } else {
+                    alert(data.error || 'Hiba a mentés során.');
+                }
+            } catch (err) {
+                alert('Szerverhiba.');
+            }
+        });
+    }
+
     const photoForm = document.getElementById('photo-upload-form');
     if (photoForm) {
         photoForm.addEventListener('submit', async (e) => {
@@ -101,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     alert('Hiba a képek feltöltésekor.');
                 }
             } catch (err) {
-                alert('Szerverhiba a feltöltés során.');
+                alert('Szerverhiba.');
             }
         });
     }
@@ -116,11 +146,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const loginBtnDiv = document.getElementById('google-signin-btn-login');
             if (loginBtnDiv) {
-                google.accounts.id.renderButton(loginBtnDiv, { theme: 'outline', size: 'large', width: '300' });
+                google.accounts.id.renderButton(loginBtnDiv, { theme: 'outline', size: 'large', width: '320' });
             }
             const regBtnDiv = document.getElementById('google-signin-btn-reg');
             if (regBtnDiv) {
-                google.accounts.id.renderButton(regBtnDiv, { theme: 'outline', size: 'large', width: '300' });
+                google.accounts.id.renderButton(regBtnDiv, { theme: 'outline', size: 'large', width: '320' });
             }
         } catch (e) {
             console.log('Google Auth nem inicializálódott.');
@@ -172,8 +202,10 @@ async function loadUserProfile() {
         });
         if (res.ok) {
             const user = await res.json();
-            document.getElementById('profile-display-name').textContent = user.displayName;
-            document.getElementById('profile-credits').textContent = user.credits;
+            document.getElementById('profile-name-input').value = user.displayName || '';
+            document.getElementById('profile-age-input').value = user.age || 18;
+            document.getElementById('profile-gender-input').value = user.gender || 'Nő';
+            document.getElementById('profile-credits').textContent = user.credits || 0;
             
             if (user.profileImage) {
                 document.getElementById('prev-profile-img').src = user.profileImage;
@@ -213,7 +245,7 @@ window.buyCredits = async function(packageSize) {
         if (data.url) {
             window.location.href = data.url;
         } else {
-            alert(data.error || 'Hiba a Stripe fizetési kapu indításakor.');
+            alert(data.error || 'Hiba a fizetés indításakor.');
         }
     } catch (err) {
         alert('Szerverhiba.');

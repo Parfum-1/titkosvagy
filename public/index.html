@@ -3,25 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nocturne - Diszkrét 18+ Ismerkedés</title>
+    <title>Titkovágy - Diszkrét 18+ Ismerkedés</title>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
         :root {
-            --bg-main: #0b0f19;
-            --bg-card: #131b2e;
-            --bg-card-hover: #1c2640;
-            --accent-cyan: #0ea5e9;
-            --accent-purple: #8b5cf6;
+            --bg-main: #07090f;
+            --bg-card: #101624;
+            --bg-card-hover: #182238;
+            --accent-rose: #f43f5e;
+            --accent-pink: #fb7185;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
-            --border-color: rgba(14, 165, 233, 0.2);
+            --border-color: rgba(244, 63, 94, 0.25);
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
         }
 
         body {
@@ -33,10 +33,10 @@
         }
 
         header {
-            background-color: rgba(11, 15, 25, 0.9);
-            backdrop-filter: blur(10px);
+            background-color: rgba(7, 9, 15, 0.95);
+            backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--border-color);
-            padding: 1rem 2rem;
+            padding: 1rem 2.5rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -49,24 +49,26 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            font-weight: 700;
+            font-weight: 800;
             color: var(--text-main);
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             text-decoration: none;
             cursor: pointer;
+            letter-spacing: -0.5px;
         }
 
         .logo-box {
-            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            background: linear-gradient(135deg, var(--accent-rose), var(--accent-pink));
             color: white;
             padding: 6px 10px;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 1.1rem;
+            box-shadow: 0 4px 15px rgba(244, 63, 94, 0.4);
         }
 
         nav {
             display: flex;
-            gap: 1.5rem;
+            gap: 2rem;
             align-items: center;
         }
 
@@ -80,20 +82,21 @@
         }
 
         nav a:hover, nav a.active {
-            color: var(--accent-cyan);
+            color: var(--accent-pink);
         }
 
         .nav-buttons {
             display: flex;
             gap: 1rem;
+            align-items: center;
         }
 
         .btn-outline {
             background: transparent;
             border: 1px solid var(--border-color);
             color: var(--text-main);
-            padding: 0.5rem 1.2rem;
-            border-radius: 8px;
+            padding: 0.6rem 1.4rem;
+            border-radius: 10px;
             cursor: pointer;
             text-decoration: none;
             font-weight: 600;
@@ -101,25 +104,26 @@
         }
 
         .btn-outline:hover {
-            border-color: var(--accent-cyan);
-            background: rgba(14, 165, 233, 0.05);
+            border-color: var(--accent-pink);
+            background: rgba(244, 63, 94, 0.05);
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            background: linear-gradient(135deg, var(--accent-rose), var(--accent-pink));
             border: none;
             color: white;
-            padding: 0.6rem 1.4rem;
-            border-radius: 8px;
+            padding: 0.65rem 1.6rem;
+            border-radius: 10px;
             cursor: pointer;
             text-decoration: none;
             font-weight: 600;
-            box-shadow: 0 4px 20px rgba(14, 165, 233, 0.3);
-            transition: opacity 0.3s;
+            box-shadow: 0 4px 20px rgba(244, 63, 94, 0.35);
+            transition: transform 0.2s, opacity 0.3s;
         }
 
         .btn-primary:hover {
-            opacity: 0.9;
+            opacity: 0.95;
+            transform: translateY(-1px);
         }
 
         .view-section {
@@ -139,19 +143,19 @@
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            padding: 4rem 3rem;
-            background: linear-gradient(135deg, rgba(19, 27, 46, 0.9), rgba(11, 15, 25, 0.9));
-            border-radius: 20px;
+            padding: 4.5rem 3.5rem;
+            background: linear-gradient(135deg, rgba(16, 22, 36, 0.95), rgba(7, 9, 15, 0.95));
+            border-radius: 24px;
             border: 1px solid var(--border-color);
             position: relative;
-            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
 
         .badge {
-            background: rgba(14, 165, 233, 0.1);
-            color: var(--accent-cyan);
+            background: rgba(244, 63, 94, 0.12);
+            color: var(--accent-pink);
             padding: 0.4rem 1rem;
-            border-radius: 20px;
+            border-radius: 30px;
             font-size: 0.85rem;
             border: 1px solid var(--border-color);
             margin-bottom: 1.5rem;
@@ -201,12 +205,11 @@
             margin: 0;
         }
 
-        .search-container {
+        .search-container, .auth-card, .profile-container, .help-section-box {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
-            padding: 2rem;
-            border-radius: 16px;
-            margin-top: 1.5rem;
+            padding: 2.5rem;
+            border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
@@ -233,30 +236,20 @@
             background: var(--bg-main);
             border: 1px solid var(--border-color);
             color: var(--text-main);
-            padding: 0.75rem;
-            border-radius: 8px;
+            padding: 0.8rem;
+            border-radius: 10px;
             font-size: 0.95rem;
             outline: none;
             transition: border-color 0.3s;
         }
 
         .form-control:focus {
-            border-color: var(--accent-cyan);
+            border-color: var(--accent-pink);
         }
 
         .auth-wrapper {
-            display: grid;
-            grid-template-columns: 1fr;
-            max-width: 480px;
+            max-width: 460px;
             margin: 2rem auto;
-        }
-
-        .auth-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            padding: 2.5rem;
-            border-radius: 16px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
         }
 
         .auth-card h2 {
@@ -282,69 +275,16 @@
             display: flex;
             align-items: flex-start;
             gap: 10px;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
             font-size: 0.85rem;
             color: var(--text-muted);
-        }
-
-        .help-content h1 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .help-section-box {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            padding: 2rem;
-            border-radius: 16px;
-            margin-top: 1.5rem;
-        }
-
-        .help-section-box h3 {
-            color: var(--accent-cyan);
-            margin-bottom: 0.75rem;
-            font-size: 1.25rem;
-        }
-
-        .help-section-box p {
-            color: var(--text-muted);
-            line-height: 1.6;
-        }
-
-        .profile-container {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            padding: 2.5rem;
-            border-radius: 16px;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .profile-preview-imgs {
-            display: flex;
-            gap: 1.5rem;
-            margin-top: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .img-box text-align center {
-            text-align: center;
-        }
-
-        .img-box img {
-            width: 100px;
-            height: 100px;
-            object-fit: cover;
-            border-radius: 50%;
-            border: 2px solid var(--accent-cyan);
-            background: var(--bg-main);
         }
 
         .tab-switcher {
             display: flex;
             background: var(--bg-main);
-            padding: 4px;
-            border-radius: 8px;
+            padding: 5px;
+            border-radius: 12px;
             margin-bottom: 1.5rem;
             border: 1px solid var(--border-color);
         }
@@ -354,16 +294,58 @@
             background: transparent;
             border: none;
             color: var(--text-muted);
-            padding: 0.6rem;
+            padding: 0.7rem;
             font-weight: 600;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s;
         }
 
         .tab-btn.active {
-            background: var(--accent-cyan);
+            background: linear-gradient(135deg, var(--accent-rose), var(--accent-pink));
             color: white;
+            box-shadow: 0 4px 12px rgba(244, 63, 94, 0.3);
+        }
+
+        .profile-container {
+            max-width: 650px;
+            margin: 0 auto;
+        }
+
+        .profile-preview-imgs {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .img-box {
+            text-align: center;
+        }
+
+        .img-box img {
+            width: 110px;
+            height: 110px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 2px solid var(--accent-pink);
+            background: var(--bg-main);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+
+        .help-section-box {
+            margin-top: 1.5rem;
+        }
+
+        .help-section-box h3 {
+            color: var(--accent-pink);
+            margin-bottom: 0.75rem;
+            font-size: 1.25rem;
+        }
+
+        .help-section-box p {
+            color: var(--text-muted);
+            line-height: 1.6;
         }
     </style>
 </head>
@@ -371,8 +353,8 @@
 
     <header>
         <a class="logo-area" onclick="switchView('home')">
-            <div class="logo-box">🌙</div>
-            <span>Nocturne</span>
+            <div class="logo-box">🔥</div>
+            <span>Titkovágy</span>
         </a>
         <nav>
             <a onclick="switchView('home')" id="nav-home" class="active">Főoldal</a>
@@ -389,7 +371,7 @@
     <!-- FŐOLDAL -->
     <div id="view-home" class="view-section active">
         <div class="hero">
-            <div class="badge">🌙 Nocturne · diszkrét 18+ ismerkedés</div>
+            <div class="badge">🔥 Titkovágy · diszkrét 18+ ismerkedés</div>
             <h1>Ismerkedj<br>diszkréten. A többi<br>rajtatok múlik.</h1>
             <p>Flört, beszélgetés vagy valami több? Nézz körül, találd meg azt, aki felkelti a figyelmed, és csatlakozz a rendszerhez.</p>
             <div class="hero-buttons">
@@ -397,14 +379,14 @@
                 <button class="btn-outline" onclick="switchView('register')">Csatlakozom ingyen</button>
             </div>
             <div class="stats-grid">
-                <div class="stat-item"><h3>920+</h3><p>böngészhető adatlap</p></div>
+                <div class="stat-item"><h3>950+</h3><p>böngészhető adatlap</p></div>
                 <div class="stat-item"><h3>Aktív</h3><p>kredit és fizetési rendszer</p></div>
                 <div class="stat-item"><h3>18+</h3><p>felnőtteknek</p></div>
             </div>
         </div>
     </div>
 
-    <!-- KERESÉS (Összes magyar megyével) -->
+    <!-- KERESÉS (Összes megyével) -->
     <div id="view-search" class="view-section">
         <h1>Keresés</h1>
         <p style="color: var(--text-muted); margin-bottom: 2rem;">Nézz körül, vagy szűkítsd a találatokat nem, kor és megye szerint.</p>
@@ -473,8 +455,8 @@
                     <button class="tab-btn active" onclick="switchView('login')">Belépés</button>
                     <button class="tab-btn" onclick="switchView('register')">Regisztráció</button>
                 </div>
-                <h2>Belépés</h2>
-                <p>Lépj be, és folytasd ott, ahol abbahagytad.</p>
+                <h2>Üdv újra!</h2>
+                <p>Lépj be a fiókodba a folytatáshoz.</p>
                 
                 <div id="google-signin-btn-login" style="margin-bottom: 1.5rem; display: flex; justify-content: center;"></div>
                 <div class="divider">vagy e-mail címmel</div>
@@ -488,7 +470,7 @@
                         <label>Jelszó</label>
                         <input type="password" class="form-control" id="login-password" placeholder="Jelszó" required>
                     </div>
-                    <button type="submit" class="btn-primary" style="width: 100%; margin-bottom: 1rem;">Belépés</button>
+                    <button type="submit" class="btn-primary" style="width: 100%;">Bejelentkezés</button>
                 </form>
             </div>
         </div>
@@ -502,8 +484,8 @@
                     <button class="tab-btn" onclick="switchView('login')">Belépés</button>
                     <button class="tab-btn active" onclick="switchView('register')">Regisztráció</button>
                 </div>
-                <h2>Regisztráció</h2>
-                <p>Hozd létre fiókodat néhány lépésben.</p>
+                <h2>Fiók létrehozása</h2>
+                <p>Csatlakozz ingyen és fedezd fel a lehetőségeket.</p>
                 
                 <div id="google-signin-btn-reg" style="margin-bottom: 1.5rem; display: flex; justify-content: center;"></div>
                 <div class="divider">vagy e-mail címmel</div>
@@ -511,7 +493,7 @@
                 <form id="register-form">
                     <div class="form-group" style="margin-bottom: 1rem;">
                         <label>Megjelenített név</label>
-                        <input type="text" class="form-control" id="reg-name" placeholder="Ezt látják majd mások" required>
+                        <input type="text" class="form-control" id="reg-name" placeholder="Ezt látják mások" required>
                     </div>
                     <div class="form-group" style="margin-bottom: 1rem;">
                         <label>E-mail cím</label>
@@ -521,7 +503,7 @@
                         <label>Jelszó</label>
                         <input type="password" class="form-control" id="reg-password" placeholder="Legalább 8 karakter" required>
                     </div>
-                    <div class="checkbox-group" style="margin-bottom: 1.5rem;">
+                    <div class="checkbox-group">
                         <input type="checkbox" id="c2" required>
                         <label for="c2">Elfogadom az ÁSZF-et és megerősítem, hogy 18 éves vagyok.</label>
                     </div>
@@ -531,72 +513,82 @@
         </div>
     </div>
 
-    <!-- SAJÁT PROFIL -->
+    <!-- SAJÁT PROFIL (Kor, nem, 2 db képfeltöltés) -->
     <div id="view-profile" class="view-section">
         <div class="profile-container">
             <h2>Saját Profilom</h2>
-            <p style="color: var(--text-muted); margin-top: 0.5rem;">Felhasználó: <span id="profile-display-name" style="color:var(--accent-cyan);"></span></p>
-            <p style="color: var(--text-muted);">Egyenleg: <span id="profile-credits" style="color:var(--accent-cyan);">0</span> kredit</p>
+            <p style="color: var(--text-muted); margin-top: 0.5rem;">Aktív egyenleg: <span id="profile-credits" style="color:var(--accent-pink); font-weight:bold;">0</span> kredit</p>
             
+            <form id="profile-info-form" style="margin-top: 1.5rem; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                <div class="form-group" style="grid-column: span 3;">
+                    <label>Megjelenített név:</label>
+                    <input type="text" class="form-control" id="profile-name-input" required>
+                </div>
+                <div class="form-group">
+                    <label>Korod:</label>
+                    <input type="number" class="form-control" id="profile-age-input" min="18" max="99" required>
+                </div>
+                <div class="form-group" style="grid-column: span 2;">
+                    <label>Nemed:</label>
+                    <select class="form-control" id="profile-gender-input">
+                        <option value="Nő">Nő</option>
+                        <option value="Férfi">Férfi</option>
+                        <option value="Transz">Transz</option>
+                    </select>
+                </div>
+                <div style="grid-column: span 3;">
+                    <button type="submit" class="btn-outline">Adataim mentése</button>
+                </div>
+            </form>
+
+            <hr style="border-color: var(--border-color); margin: 2rem 0;">
+
+            <h3>Képek kezelése (Profilkép és Zárt kép)</h3>
             <div class="profile-preview-imgs">
                 <div class="img-box">
-                    <p style="font-size:0.8rem; margin-bottom:5px;">Profilkép</p>
-                    <img id="prev-profile-img" src="" alt="Nincs profilkép">
+                    <p style="font-size:0.8rem; margin-bottom:5px; color:var(--text-muted);">Nyilvános profilkép</p>
+                    <img id="prev-profile-img" src="" alt="Még nincs">
                 </div>
                 <div class="img-box">
-                    <p style="font-size:0.8rem; margin-bottom:5px;">Zárt saját kép</p>
-                    <img id="prev-private-img" src="" alt="Nincs zárt kép">
+                    <p style="font-size:0.8rem; margin-bottom:5px; color:var(--text-muted);">Zárt saját kép</p>
+                    <img id="prev-private-img" src="" alt="Még nincs">
                 </div>
             </div>
 
-            <hr style="border-color: var(--border-color); margin: 1.5rem 0;">
-
-            <h3>Képek feltöltése</h3>
             <form id="photo-upload-form" style="margin-top: 1rem;">
                 <div class="form-group" style="margin-bottom: 1rem;">
-                    <label>Nyilvános profilkép:</label>
+                    <label>Új nyilvános profilkép:</label>
                     <input type="file" class="form-control" id="input-profile-img" accept="image/*">
                 </div>
                 <div class="form-group" style="margin-bottom: 1.5rem;">
-                    <label>Zárt saját kép:</label>
+                    <label>Új zárt saját kép:</label>
                     <input type="file" class="form-control" id="input-private-img" accept="image/*">
                 </div>
                 <button type="submit" class="btn-primary">Képek feltöltése</button>
             </form>
 
-            <hr style="border-color: var(--border-color); margin: 1.5rem 0;">
+            <hr style="border-color: var(--border-color); margin: 2rem 0;">
 
             <h3>Kredit Vásárlás (Stripe)</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">Biztonságos kártyás fizetés.</p>
             <button class="btn-primary" onclick="buyCredits(50)">50 Kredit vásárlása (5000 Ft)</button>
-            <button class="btn-outline" onclick="logout()" style="margin-left: 1rem;">Kilépés</button>
+            <button class="btn-outline" onclick="logout()" style="margin-left: 1rem; border-color: #f43f5e; color: #f43f5e;">Kilépés</button>
         </div>
     </div>
 
     <!-- SEGÍTSÉG -->
     <div id="view-help" class="view-section">
         <div class="help-content">
-            <h1>Hogyan működik a Nocturne?</h1>
+            <h1>Hogyan működik a Titkovágy?</h1>
             <p style="color: var(--text-muted);">Rövid, közérthető leírás a funkciókról.</p>
             
             <div class="help-section-box">
-                <h3>1. Böngészés</h3>
-                <p>Az adatlapok megtekintése és a kereső használata belépés nélkül is elérhető lehet.</p>
+                <h3>1. Böngészés és Keresés</h3>
+                <p>Az adatlapok megtekintése és a kereső használata megyék szerint bárki számára elérhető.</p>
             </div>
             <div class="help-section-box">
-                <h3>2. Üzenetváltás</h3>
-                <p>Üzenet küldéséhez bejelentkezés és elegendő kredit szükséges.</p>
-            </div>
-            <div class="help-section-box">
-                <h3>3. Zárt képek</h3>
-                <p>A zárt képek megnyitása kreditek ellenében lehetséges.</p>
-            </div>
-            <div class="help-section-box">
-                <h3>4. Virtuális adatlapok</h3>
-                <p>A szolgáltatásban szerepelhetnek szórakoztató céllal létrehozott virtuális profilok is.</p>
-            </div>
-            <div class="help-section-box">
-                <h3>5. AI-rendszer</h3>
-                <p>Egyes beszélgetések részben vagy egészben AI-közreműködéssel működhetnek.</p>
+                <h3>2. Zárt képek</h3>
+                <p>A saját profilodban feltölthetsz zárt képeket is, amelyek megtekintése kredithez kötött.</p>
             </div>
         </div>
     </div>

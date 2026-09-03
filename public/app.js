@@ -4,17 +4,24 @@ window.switchView = function(viewName) {
 
     const targetView = document.getElementById('view-' + viewName);
     if (targetView) targetView.classList.add('active');
-
+    
     const navEl = document.getElementById('nav-' + viewName);
     if (navEl) navEl.classList.add('active');
-
+    
     window.scrollTo(0, 0);
+};
+
+window.resetFilters = function() {
+    document.getElementById('search-keyword').value = '';
+    document.getElementById('search-gender').value = 'Mindegy';
+    document.getElementById('search-min-age').value = '18';
+    document.getElementById('search-max-age').value = '99';
+    document.getElementById('search-region').value = 'Összes megye / régió';
 };
 
 document.addEventListener('DOMContentLoaded', () => {
     checkAuthState();
 
-    // Hagyományos Regisztráció
     const regForm = document.getElementById('register-form');
     if (regForm) {
         regForm.addEventListener('submit', async (e) => {
@@ -32,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const data = await res.json();
                 if (res.ok) {
                     alert('Sikeres regisztráció! Kérlek, jelentkezz be.');
-                    switchView('login');
+                    window.switchView('login');
                 } else {
                     alert(data.error || 'Hiba történt.');
                 }
@@ -42,7 +49,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Hagyományos Bejelentkezés
     const loginForm = document.getElementById('login-form');
     if (loginForm) {
         loginForm.addEventListener('submit', async (e) => {
@@ -70,7 +76,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Képfeltöltés kezelése
     const photoForm = document.getElementById('photo-upload-form');
     if (photoForm) {
         photoForm.addEventListener('submit', async (e) => {
@@ -101,11 +106,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Google Sign-In Inicializálás (ha be van állítva a kliens ID)
     if (window.google) {
-        // Cseréld ki a CLIENT_ID-t a saját Google Console Client ID-dra
         const GOOGLE_CLIENT_ID = 'AZ_TE_GOOGLE_CLIENT_ID_OD.apps.googleusercontent.com';
-        
         try {
             google.accounts.id.initialize({
                 client_id: GOOGLE_CLIENT_ID,
@@ -121,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 google.accounts.id.renderButton(regBtnDiv, { theme: 'outline', size: 'large', width: '300' });
             }
         } catch (e) {
-            console.log('Google Auth nem inicializálódott (hiányzó ID).');
+            console.log('Google Auth nem inicializálódott.');
         }
     }
 });
@@ -142,7 +144,7 @@ async function handleGoogleResponse(response) {
             alert(data.error || 'Google hitelesítési hiba.');
         }
     } catch (err) {
-        alert('Szerverhiba a Google azonosítás során.');
+        alert('Szerverhiba.');
     }
 }
 
@@ -154,7 +156,7 @@ async function checkAuthState() {
 
         const navButtons = document.getElementById('nav-buttons-container');
         if (navButtons) {
-            navButtons.innerHTML = `<button class="btn-primary" onclick="switchView('profile')">Saját Profilom</button>`;
+            navButtons.innerHTML = `<button class="btn-primary" onclick="window.switchView('profile')">Saját Profilom</button>`;
         }
         loadUserProfile();
     }
@@ -185,16 +187,16 @@ async function loadUserProfile() {
     }
 }
 
-function logout() {
+window.logout = function() {
     localStorage.removeItem('token');
     window.location.href = '/';
-}
+};
 
-async function buyCredits(packageSize) {
+window.buyCredits = async function(packageSize) {
     const token = localStorage.getItem('token');
     if (!token) {
         alert('A vásárláshoz be kell jelentkezned!');
-        switchView('login');
+        window.switchView('login');
         return;
     }
 
@@ -214,6 +216,6 @@ async function buyCredits(packageSize) {
             alert(data.error || 'Hiba a Stripe fizetési kapu indításakor.');
         }
     } catch (err) {
-        alert('Szerverhiba a fizetés indításakor.');
+        alert('Szerverhiba.');
     }
-}
+};

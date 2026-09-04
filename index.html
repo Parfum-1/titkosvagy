@@ -370,55 +370,64 @@
                 </div>
             </div>
 
-            <!-- 5. ADMIN PANEL VIEW -->
-            <div id="view-admin" class="hidden flex-1 flex flex-col p-4 md:p-8 max-w-6xl mx-auto w-full pb-16">
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-                    <div>
-                        <span class="bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest inline-block mb-2">Adminisztráció</span>
-                        <h2 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight">Vezérlőpult (ordog-fizetes)</h2>
+            <!-- 5. ADMIN PANEL VIEW (Különálló, egyedi arculatú dizájn) -->
+            <div id="view-admin" class="hidden flex-1 flex flex-col p-4 md:p-8 max-w-6xl mx-auto w-full pb-16 bg-slate-950/90 rounded-3xl border border-amber-500/20 my-4 shadow-2xl">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-amber-500/20">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/40 flex items-center justify-center text-amber-400 text-2xl shadow-inner">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+                        <div>
+                            <span class="bg-amber-500/20 border border-amber-500/40 text-amber-300 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest inline-block mb-1">Kiemelt Biztonsági Zóna</span>
+                            <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight">Adminisztrációs Központ <span class="text-amber-400 text-lg font-normal">(ordog-fizetes)</span></h2>
+                        </div>
                     </div>
                     <div class="flex items-center gap-3">
-                        <button onclick="loadAdminData()" class="bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 px-4 py-2 rounded-xl text-sm font-semibold transition flex items-center gap-2">
+                        <button onclick="loadAdminData()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-5 py-2.5 rounded-xl text-sm transition flex items-center gap-2 shadow-lg shadow-amber-500/20">
                             <i class="fa-solid fa-rotate"></i> Adatok frissítése
                         </button>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
+                    <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-xl relative overflow-hidden group hover:border-amber-500/40 transition">
+                        <div class="absolute top-0 right-0 w-24 h-24 bg-brand-500/5 rounded-full blur-xl"></div>
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Összes Felhasználó</span>
                             <div class="w-8 h-8 rounded-xl bg-brand-500/10 text-brand-400 flex items-center justify-center"><i class="fa-solid fa-users"></i></div>
                         </div>
-                        <div id="admin-stat-users" class="text-2xl font-black text-white">0</div>
+                        <div id="admin-stat-users" class="text-3xl font-black text-white">0</div>
                     </div>
-                    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
+                    <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-xl relative overflow-hidden group hover:border-amber-500/40 transition">
+                        <div class="absolute top-0 right-0 w-24 h-24 bg-amber-500/5 rounded-full blur-xl"></div>
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Aktív VIP Tagok</span>
                             <div class="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center"><i class="fa-solid fa-crown"></i></div>
                         </div>
-                        <div id="admin-stat-vips" class="text-2xl font-black text-white">0</div>
+                        <div id="admin-stat-vips" class="text-3xl font-black text-amber-400">0</div>
                     </div>
-                    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
+                    <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-xl relative overflow-hidden group hover:border-amber-500/40 transition">
+                        <div class="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-full blur-xl"></div>
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Összes Kedvelés</span>
                             <div class="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center"><i class="fa-solid fa-heart"></i></div>
                         </div>
-                        <div id="admin-stat-likes" class="text-2xl font-black text-white">0</div>
+                        <div id="admin-stat-likes" class="text-3xl font-black text-white">0</div>
                     </div>
-                    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
+                    <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-xl relative overflow-hidden group hover:border-amber-500/40 transition">
+                        <div class="absolute top-0 right-0 w-24 h-24 bg-yellow-500/5 rounded-full blur-xl"></div>
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Rendszer Státusz</span>
                             <div class="w-8 h-8 rounded-xl bg-yellow-500/10 text-yellow-400 flex items-center justify-center"><i class="fa-solid fa-server"></i></div>
                         </div>
-                        <div class="text-xl font-bold text-emerald-400">Online (Firestore)</div>
+                        <div class="text-lg font-bold text-emerald-400 flex items-center gap-1.5 mt-1"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span> Online (Firestore)</div>
                     </div>
                 </div>
 
-                <div class="bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden shadow-xl">
-                    <div class="p-6 border-b border-slate-800 flex items-center justify-between">
-                        <h3 class="font-bold text-lg text-white">Felhasználók kezelése</h3>
-                        <span class="text-xs bg-slate-800 text-slate-300 px-3 py-1 rounded-full" id="admin-users-count">0 regisztrált</span>
+                <div class="bg-slate-900/90 border border-slate-800 rounded-3xl overflow-hidden shadow-2xl">
+                    <div class="p-6 border-b border-slate-800 flex items-center justify-between bg-slate-950/60">
+                        <h3 class="font-bold text-lg text-white flex items-center gap-2"><i class="fa-solid fa-address-book text-amber-400"></i> Felhasználók kezelése és engedélyek</h3>
+                        <span class="text-xs bg-slate-800 text-amber-300 border border-amber-500/30 px-3 py-1 rounded-full font-medium" id="admin-users-count">0 regisztrált</span>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-sm text-slate-300">
@@ -525,7 +534,6 @@
         let messagesUnsubscribe = null;
         let messagesData = {};
 
-        // Export functions globally
         window.switchTab = switchTab;
         window.setAuthMode = setAuthMode;
         window.handleGoogleLogin = handleGoogleLogin;

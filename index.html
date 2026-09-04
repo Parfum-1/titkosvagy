@@ -502,7 +502,7 @@
             auth = getAuth(app);
             db = getFirestore(app);
             isFirebaseInitialized = true;
-            document.getElementById('firebase-status-text').innerText = "Firebase kapcsolat aktív (ordog-fizetes projekt). Adatok szinkronizálva a Firestore felhőben.";
+            document.getElementById('firebase-status-text').innerText = "Firebase kapcsolat aktív (ordog-fizetes projekt). Adatok szinkronizálva a Firestore felhőben[cite: 2].";
             document.getElementById('firebase-status-banner').className = "mb-6 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs flex items-start gap-2";
         } catch(e) {
             console.error("Firebase init failed", e);
@@ -592,11 +592,19 @@
                     userData.uid = uid;
                     userData.email = currentUser.email || 'user@ordogfizetes.hu';
                     userData.name = currentUser.displayName || (userData.email.split('@')[0]) || 'Új Felhasználó';
-                    if (userData.email.includes('admin') || userData.email === 'admin@ordogfizetes.hu') {
+                    if (userData.email === 'admin@ordogfizetes.hu') {
                         userData.isAdmin = true;
                     }
                     await setDoc(userRef, userData);
                 }
+                
+                // Csak az admin@ordogfizetes.hu email címmel rendelkező láthatja az admint
+                if (userData.email === 'admin@ordogfizetes.hu') {
+                    userData.isAdmin = true;
+                } else {
+                    userData.isAdmin = false;
+                }
+
                 showMainApp();
             } catch(e) {
                 console.error("Error fetching user data", e);
@@ -627,10 +635,18 @@
             document.getElementById('main-header').classList.remove('hidden');
             document.getElementById('mobile-bottom-nav').classList.remove('hidden');
 
-            if (userData.isAdmin || userData.email.includes('admin')) {
+            // Admin felület szigorú elrejtése: csak a megadott admin email láthatja
+            if (userData.email === 'admin@ordogfizetes.hu') {
                 document.getElementById('nav-admin').classList.remove('hidden');
                 document.getElementById('mob-nav-admin').classList.remove('hidden');
                 document.getElementById('mob-nav-admin').classList.add('flex');
+            } else {
+                document.getElementById('nav-admin').classList.add('hidden');
+                document.getElementById('mob-nav-admin').classList.add('hidden');
+                document.getElementById('mob-nav-admin').classList.remove('flex');
+                if (currentTab === 'admin') {
+                    switchTab('discover');
+                }
             }
 
             updateHeaderUI();
@@ -694,7 +710,7 @@
                     userData.uid = currentUser.uid;
                     userData.email = email;
                     userData.name = name || 'Felhasználó';
-                    if (email.includes('admin')) userData.isAdmin = true;
+                    if (email === 'admin@ordogfizetes.hu') userData.isAdmin = true;
                     await saveUserDataToFirebase();
                     showToast("Sikeres regisztráció!", "success");
                 } else {
@@ -733,6 +749,11 @@
         }
 
         function switchTab(tab) {
+            if (tab === 'admin' && userData.email !== 'admin@ordogfizetes.hu') {
+                showToast("Nincs jogosultságod az admin felület megtekintéséhez!", "error");
+                return;
+            }
+
             currentTab = tab;
             const views = ['discover', 'matches', 'store', 'profile', 'admin'];
             views.forEach(v => {
@@ -1295,6 +1316,8 @@
         }
 
         async function loadAdminData() {
+            if (userData.email !== 'admin@ordogfizetes.hu') return;
+
             document.getElementById('admin-stat-users').innerText = allUsers.length + 1;
             document.getElementById('admin-stat-vips').innerText = (userData.isVip ? 1 : 0) + allUsers.filter(u => u.isVip).length;
             document.getElementById('admin-stat-likes').innerText = matchesList.length * 2;
@@ -1348,6 +1371,8 @@
         }
 
         async function adminToggleVip(targetUid) {
+            if (userData.email !== 'admin@ordogfizetes.hu') return;
+
             if (targetUid === 'current') {
                 userData.isVip = !userData.isVip;
                 updateHeaderUI();
